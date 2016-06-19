@@ -2,7 +2,6 @@ package ua.khpi.soklakov.Practice3.part4;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 public class Part4 {
 

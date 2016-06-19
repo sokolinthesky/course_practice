@@ -6,7 +6,7 @@ package ua.khpi.soklakov.Practice1;
  * @author soklakov
  *
  */
-public class Subtask02 {
+public class Part2 {
 
 	public static void main(String[] args) {
 		System.out.println("sum: " + sum(Double.parseDouble(args[0]), Double.parseDouble(args[1])));

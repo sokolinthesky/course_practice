@@ -6,43 +6,53 @@ public class Demo {
 
 	public static void main(String[] args) {
 		MyListImpl list = new MyListImpl();
-
-		for (int i = 0; i < 16; i++) {
-			list.add(i);
+		
+		list.add(new String("a"));
+		list.add(new String("c"));
+		list.add(433);
+		list.add(new String("n"));
+		
+		System.out.println("Size of list = " + list.size());
+		
+		for(Object object : list){
+			System.out.println(object);
 		}
-
-		System.out.println("ORIGINAL LIST:");
-		System.out.println(list);
-		System.out.println("LIST SIZE: " + list.size() + "\n");
-
-		list.add(16);
-		list.add(15);
-		System.out.println("LIST SIZE AFTER ADD: " + list.size());
-		System.out.println(list + "\n");
-
-		list.remove(15);
-		System.out.println("LIST AFTER REMOVE:");
-		System.out.println(list);
-		System.out.println("LIST SIZE AFTER REMOVE: " + list.size() + "\n");
-
-		System.out.println("CONTAINS RESOULT: " + list.contains(0) + "\n");
-
-		MyListImpl listTwo = new MyListImpl();
-		listTwo.add(1);
-		listTwo.add(2);
-		System.out.println("CONTAINS ALL RESOULT: " + list.containsAll(listTwo));
-
-		MyListImpl con = new MyListImpl();
-		con.add(1);
-		con.add(2);
-		con.add(3);
-
-		for (Object o : con) {
-			System.out.println(o);
+		
+		Iterator<Object> itrList = list.iterator();
+		while(itrList.hasNext()){
+			System.out.println(itrList.next());	
 		}
-
-		Iterator<Object> it = con.iterator();
-		while (it.hasNext())
-			System.out.println(it.next());
+		
+		System.out.println(list);
+		
+		MyList testList = new MyListImpl();
+		
+		testList.add("a");
+		testList.add(433);
+		
+		System.out.println("Does contains teseList in list ? = " +
+						   list.containsAll(testList));
+		
+		System.out.println("Does contains element 'a' in list ? = " + 
+						   list.contains("a"));
+		
+		Object[] arrayOfList = list.toArray();
+		String strArrayOfList = "";
+		
+		for(Object element : arrayOfList)
+			strArrayOfList = strArrayOfList + element + ","; 
+		
+		System.out.println("To array list = " + strArrayOfList);
+		
+		System.out.println("Does delete element = 433 ? " + list.remove(433));
+		
+		list.remove("c");
+		System.out.println("Remove " + list);
+		
+		ListIterator listIterator = list.listIterator();
+		
+		while(listIterator.hasPrevious()){
+			System.out.println("previous: " + listIterator.previous());
+		}
 	}
 }

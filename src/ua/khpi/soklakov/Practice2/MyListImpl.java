@@ -4,240 +4,390 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Resizable-array implementation of the <tt>MyList</tt> interface. Implements
- * all optional list operations, and permits all elements, including
- * <tt>null</tt>. In addition to implementing the <tt>List</tt> interface, this
- * class provides methods to manipulate the size of the array that is used
- * internally to store the list.
- * 
- * @author soklakov
- *
+ * This class implementation of the MyList interface.
+ * @author Eugene Jurkov
+ * @version 1.0
  */
-public class MyListImpl implements MyList {
-
-	private static final int DEFAULT_SIZE = 10;
-	private Object[] array;
-	private int size = 0;
-
-	public MyListImpl() {
-		array = new Object[DEFAULT_SIZE];
-	}
-
-	public MyListImpl(int size) {
-		array = new Object[size];
-	}
-
+public class MyListImpl implements MyList, ListIterable{
+	
 	/**
-	 * appends the specified element to the end of this list
-	 * 
-	 * @param o
-	 *            to add specified element.
+	 * Reference to first node.
 	 */
-	@Override
-	public void add(Object e) {
-		try {
-			array[size] = e;
-			size++;
-
-		} catch (ArrayIndexOutOfBoundsException ex) {
-			Object[] arr = array;
-			array = new Object[array.length * 2];
-			System.arraycopy(arr, 0, array, 0, arr.length);
-
-			array[arr.length] = e;
-			size++;
-
+	private Node headList;
+	
+	/**
+	 * Reference to last node.
+	 */
+	private Node tailList;
+	
+	/**
+	 * Number of elements of list.
+	 */
+	private int size;
+	
+	/**
+	 * Constructor of empty list.
+	 */
+	public MyListImpl(){
+		headList = null;
+		tailList = null;
+		size = 0;
+	}
+	
+	/**
+	 * This inner class represents node of the list.
+	 * 
+	 */
+	private class Node{
+		
+		/**
+		 * Reference to the next node of the list.
+		 */
+		Node next;
+		
+		/**
+		 * Reference to the previous node of the list.
+		 */
+		Node prev;
+		
+		/**
+		 * Content of the node.
+		 */
+		Object item;
+		
+		public Node(Node prev ,Object object, Node next){
+			this.prev = prev;
+			item = object;
+			this.next = next;
 		}
 	}
+	
+	/**
+	 * This method appends the specified element to the end List.
+	 * 
+	 * @param object which will be add
+	 */
+	@Override
+	public void add(Object object) {
+		Node oldTailList = tailList;
+		Node newTailList = new Node(oldTailList ,object, null);
+		
+		if(oldTailList == null){
+			tailList = newTailList;
+			headList = tailList;
+		}
+		else{
+			oldTailList.next = newTailList;
+			tailList = newTailList;
+		}
+		
+		size++;
+	}
+	
 
 	/**
-	 * removes all of the elements from this list
+	 * This method removes all the elements of this list.
 	 */
 	@Override
 	public void clear() {
-		array = new Object[10];
+		headList = null;
+		tailList = null;
 		size = 0;
-
 	}
-
+	
 	/**
-	 * removes the first occurrence of the specified element from this list
+	 * Return true if the element removed form list 
 	 * 
-	 * @param o
-	 *            is the specified element to remove
-	 * 
-	 * @return true if the specified element remove
+	 * @return true if the element removed from list
 	 */
 	@Override
-	public boolean remove(Object o) {
-		int count = 0;
-		int index = 0;
-
-		try {
-			for (int i = 0; i < size; i++) {
-				if (array[i].equals(o))
-					count++;
-			}
-
-			Object[] newArray = new Object[size - count];
-
-			for (int i = 0; i < newArray.length + 1; i++) {
-				if (array[i].equals(o)) {
-					index++;
-				} else {
-					newArray[i - index] = array[i];
-				}
-			}
-
-			this.array = newArray;
-			size = size - count;
-
-			return true;
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-
+	public boolean remove(Object object) {
+		
+		if(object == null)
 			return false;
-		}
-	}
-
-	/**
-	 * returns an array containing all of the elements in this list in proper
-	 * sequence
-	 */
-	@Override
-	public Object[] toArray() {
-		return array.clone();
-	}
-
-	/**
-	 * returns the number of elements in this list
-	 * 
-	 * @return the number of elements in this list
-	 */
-	@Override
-	public int size() {
-		return this.size;
-	}
-
-	/**
-	 * returns true if this list contains the specified element.
-	 * 
-	 * @return true if the list contains the specidied element.
-	 */
-	@Override
-	public boolean contains(Object o) {
-
-		for (int i = 0; i < size; i++) {
-			if (array[i].equals(o)) {
+		
+		for(Node x = headList; x != null; x = x.next){
+			if(object.equals(x.item)){
+				Node prevX = x.prev;
+				Node nextX = x.next;
+				
+				if(prevX == null){
+					headList = nextX;
+				}
+				else{
+					prevX.next = x.next;
+				}
+				
+				if(nextX == null){
+					tailList = prevX;
+				}
+				else{
+					nextX.prev = prevX;
+				}
+				
+				size--;
 				return true;
 			}
 		}
 		return false;
 	}
-
-	@Override
-	public boolean containsAll(ua.khpi.soklakov.Practice2.MyList c) {
-		boolean res = true;
-		Object[] arr = c.toArray();
-
-		for (int i = 0; i < c.size(); i++) {
-			if (!this.contains(arr[i])) {
-				res = false;
-				break;
-			}
-		}
-		return res;
-	}
-
+	
 	/**
-	 * Retuens the string with all elements of list
+	 * Returned array contains all elements of the list.
 	 * 
-	 * @return string with all elements of list
+	 * @return array contains all elements of the list.
 	 */
 	@Override
-	public String toString() {
-		String string = "";
-
-		for (int i = 0; i < array.length - 1; i++) {
-			string += "[" + array[i] + "], ";
+	public Object[] toArray() {
+		Object[] arrayElementsOfList = new Object[size];
+		int i = 0;
+		
+		for(Node x = headList; x != null; x = x.next){
+			arrayElementsOfList[i] = x.item;
+			i++;
 		}
-
-		string += "[" + array[array.length - 1] + "]";
-		return string;
+		
+		return arrayElementsOfList;
 	}
-
+	
 	/**
-	 * MyList iterator over the elements in this list (in proper sequence).
+	 * Returns the number of elements of list.
 	 * 
-	 * @author soklakov
-	 *
+	 * @return the number of elements of list.
 	 */
-	private class IteratorImpl implements Iterator<Object> {
-		private Object[] arr = array;
-		private int count = 0;
-		private int index = 0;
-		private int removeCount = 0;
-
-		/**
-		 * Returns {@code true} if the iteration has more elements. (In other
-		 * words, returns {@code true} if {@link #next} would return an element
-		 * rather than throwing an exception.)
-		 *
-		 * @return {@code true} if the iteration has more elements
-		 */
-		public boolean hasNext() {
-			if (count < size) {
+	@Override
+	public int size() {
+		return size;
+	}
+	
+	/**
+	 * Returned true if the specified element contains in list.
+	 * 
+	 * @param object is the specified element which will be checked. 
+	 * @return true if the specified element contains in list.
+	 */
+	@Override
+	public boolean contains(Object object) {
+		for(Node x = headList; x != null; x = x.next){
+			if(object.equals(x.item))
 				return true;
-			} else {
-				return false;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Returns true if this list contains the specified list.
+	 * 
+	 * @param myList is the specified collection to contain in list.
+	 * @return true if this list contains the specified collection.
+	 */
+	@Override
+	public boolean containsAll(MyList myList) {
+		int count = 0;
+		Object[] arrayMyList = toArray();
+		
+		for(Node x = headList; x != null; x = x.next){
+			for(Object objectMyList : arrayMyList){
+				if(x.item.equals(objectMyList)){
+					count++;
+				}
 			}
 		}
-
+		
+		if(count < arrayMyList.length)
+			return false;
+		
+		return true;
+	}
+	
+	/**
+	 * Returns the string with all elements of list
+	 * 
+	 * @return the string with all elements of list.
+	 */
+	@Override
+	public String toString(){
+		String resultStr = "";
+		for(Node x = headList; x != null; x = x.next){
+			resultStr = resultStr + "[" + x.item + "],";
+		}
+		
+		resultStr = "{" + resultStr + "}";
+		return resultStr;
+	}
+	
+	/**
+	 * This class implements Iterator Interface.
+	 */
+	private class IteratorImpl implements Iterator<Object>{
+		
 		/**
-		 * Returns the next element in the iteration.
-		 *
-		 * @return the next element in the iteration
+		 * Reference to the next element after last returned.
 		 */
+		private Node next;
+		
+		/**
+		 * Last returned element by Iterator.
+		 */
+		private Node lastReturned;
+		
+		/**
+		 * Index of the last returned element.
+		 */
+		int index;
+		
+		/**
+		 * Constructor of the Iterator.
+		 */
+		public IteratorImpl(){
+			next = headList;
+			index = 0;
+		}
+		
+		/**
+		 * Returned true if there is next element.
+		 * 
+		 * @return true if there is next element.
+		 */
+		@Override
+		public boolean hasNext() {
+			return index < size;
+		}
+		
+		/**
+		 * Returns the next element in the iteration. 
+		 *  
+		 * @return the next element in the iteration.
+		 */
+		@Override
 		public Object next() {
-			removeCount = 0;
-
-			if (count == 0) {
-				count++;
-				return array[index];
-			} else {
-				count++;
-				return array[count - 1];
-			}
-
+			if(!hasNext())
+				throw new NoSuchElementException();
+			
+			lastReturned = next;
+			next = next.next;
+			index++;
+			return lastReturned.item;
 		}
-
+		
 		/**
-		 * Removes from the underlying collection the last element returned by
-		 * this iterator (optional operation).
-		 *
-		 * @throws IllegalStateException
-		 *             if the {@code next} method has not yet been called, or
-		 *             the {@code remove} method has already been called after
-		 *             the last call to the {@code next} method
+		 * Removes from the underlying collection the last 
+		 * element returned by this iterator.
 		 */
-		public void remove() {
-			if (count == 0 || removeCount > 0) {
+		@Override
+		public void remove(){
+			if(lastReturned == null)
 				throw new IllegalStateException();
-			} else {
-				new MyListImpl().remove(array[count]);
-				removeCount++;
+			
+			Node prevLastReturned = lastReturned.prev;
+			
+			if(prevLastReturned == null){
+				headList = next;
+			} 
+			else{
+				prevLastReturned.next = next;
 			}
+			
+			if(lastReturned.next == null){
+				tailList = prevLastReturned;
+			}
+			else{
+				lastReturned.next.prev = prevLastReturned;
+			}
+			
+			lastReturned = null;
+			
+			size--;
+			index--;
+			
 		}
 	}
-
+	
 	/**
-	 * Returns a MyList iterator over the elements in this list (in proper
-	 * sequence).
+	 * Returned the iterator of this list.
+	 * 
+	 * @return the iterator of this list.
 	 */
 	@Override
 	public Iterator<Object> iterator() {
 		return new IteratorImpl();
 	}
+
+	/**
+	 * This class implements ListIterator Interface.
+	 */
+	private class ListIteratorImpl extends IteratorImpl implements ListIterator {
+		
+		/**
+		 * Last returned element by Iterator.
+		 */
+		private Node lastReturned;
+		
+		/**
+		 * Reference to the next element after last returned.
+		 * 
+		 */
+        private Node next;
+        private int nextIndex;
+		
+        /**
+         * Constructor of List Iterator where next index = size.
+         */
+        ListIteratorImpl() {
+            nextIndex = size;
+        }
+        
+        /**
+         * returned true if previous element exists. 
+         * 
+         * @return true if previous element exists.
+         */
+		@Override
+		public boolean hasPrevious() {
+			return nextIndex > 0; 
+		}
+		
+		/**
+		 * Returned previous element moves the cursor position backwards.
+		 * 
+		 * @return previous element.
+		 */
+		@Override
+		public Object previous() {
+			if(!hasPrevious())
+				throw new NoSuchElementException();
+			
+			lastReturned = next = (next == null) ? tailList : next.prev;
+            nextIndex--;
+            return lastReturned.item;
+		}
+		
+		/**
+		 * Replaces the last element returned by next or previous with the specified element.
+		 * 
+		 * @param specific element which will replace.  
+		 */
+		@Override
+		public void set(Object e) {
+			if (lastReturned == null)
+                throw new IllegalStateException();
+  
+            lastReturned.item = e;
+		}
+		
+	}
+	
+	/**
+	 * Returned the list iterator of this list.
+	 * 
+	 * @return the iterator of this list.
+	 */
+	@Override
+	public ListIterator listIterator() {
+		 return new ListIteratorImpl();
+	}
+	
+	
 
 }

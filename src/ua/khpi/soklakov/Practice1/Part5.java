@@ -6,15 +6,15 @@ package ua.khpi.soklakov.Practice1;
  * @author soklakov
  *
  */
-public class Subtask05 {
+public class Part5 {
 
 	public static void main(String[] args) {
 		// int digit1 = Integer.parseInt(args[0]);
 		// String char1 = String.valueOf(args[1]);
 		// String char2 = String.valueOf(args[2]);
-		System.out.println(args[1] + " > " + Subtask05.columnToNumber(args[1]));
-		System.out.println(Integer.parseInt(args[0]) + " > " + Subtask05.numberToColumn(Integer.parseInt(args[0])));
-		System.out.println(args[2] + " > " + Subtask05.rightColumn(args[2]));
+		System.out.println(args[1] + " > " + Part5.columnToNumber(args[1]));
+		System.out.println(Integer.parseInt(args[0]) + " > " + Part5.numberToColumn(Integer.parseInt(args[0])));
+		System.out.println(args[2] + " > " + Part5.rightColumn(args[2]));
 	}
 
 	/**

@@ -6,7 +6,7 @@ package ua.khpi.soklakov.Practice1;
  * @author soklakov
  *
  */
-public class Subtask01 {
+public class Part1 {
 
 	public static void main(String[] args) {
 		System.out.println("Hello, World");

@@ -1,62 +1,60 @@
 package ua.khpi.soklakov.Practice2;
 
-public interface MyList extends Iterable<Object> {
-
+/**
+ * This interface represents common method for different Lists.
+ * 
+ * @author Eugene Jurkov
+ *
+ */
+public interface MyList extends Iterable<Object>{
+	
 	/**
 	 * Appends the specified element to the end of this list.
 	 * 
-	 * @param e
-	 *            specified element.
+	 * @param o to add specified element.
 	 */
-	void add(Object e);
-
+	void add(Object o);
+	
 	/**
-	 * Removes all of the elements from this list.
+	 * Remove all elements from this list.
 	 */
-	void clear();
-
+	void clear(); 
+	
 	/**
-	 * Removes the first occurrence of the specified element from this list.
+	 *  Remove the first occurrence of the specified element form this list.
 	 * 
-	 * @param o
-	 *            specified element.
-	 * @return true if the specified element remove.
+	 * @param o is the specified element to remove. 
+	 * @return true if the specified element removed.
 	 */
-	boolean remove(Object o);
-
+	boolean remove(Object o); 
+	
 	/**
-	 * Returns an array containing all of the elements in this list in proper
-	 * sequence.
+	 * Returns an array containing all of the elements in this list in proper sequence.
 	 * 
-	 * @return an array containing all of the elements in this list.
+	 * @return Array contains all of the list.
 	 */
-	Object[] toArray();
-
+	Object[] toArray(); 
+	
 	/**
 	 * Returns the number of elements in this list.
 	 * 
-	 * @return number of elements.
+	 * @return the number of elements in this list.
 	 */
-	int size();
-
+	int size(); 
+	
 	/**
 	 * Returns true if this list contains the specified element.
 	 * 
-	 * @param o
-	 *            specified element.
+	 * @param o is specified element of list to contain.
 	 * @return true if this list contains the specified element.
 	 */
-	boolean contains(Object o);
-
+	boolean contains(Object o); 
+	
 	/**
-	 * returns true if this list contains all of the elements of the specified
-	 * list
+	 * Returns true if this list contains the specified list.
 	 * 
-	 * @param c
-	 *            specified list
-	 * @return true if this list contains all of the elements of the specified
-	 *         list
+	 * @param myList is the specified collection to contain in list.
+	 * @return true if this list contains the specified collection.
 	 */
-	boolean containsAll(MyList c);
-
+	boolean containsAll(MyList myList); 
 }

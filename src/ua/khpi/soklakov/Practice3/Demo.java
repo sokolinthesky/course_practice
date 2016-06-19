@@ -19,15 +19,16 @@ public class Demo {
 	
 	public static void main(String[] args) {
 		System.out.println("===PART1===");
-		System.out.println(sInputPart1);
+		Part1 part1 = new Part1(sInputPart1);
+		System.out.println();
 		System.out.println("");
-		System.out.println(Part1.convert1(sInputPart1));
+		System.out.println(part1.convert1());
 		System.out.println("");
-		System.out.println(Part1.convert2(sInputPart1));
+		System.out.println(part1.convert2());
 		System.out.println("");
-		System.out.println(Part1.convert3(sInputPart1));
+		System.out.println(part1.convert3());
 		System.out.println("");
-		System.out.println(Part1.convert4(sInputPart1));
+		System.out.println(part1.convert4());
 		System.out.println("===PART2===");
 		System.out.println(Part2.convert(sInputPart2));
 		System.out.println("");
@@ -43,7 +44,6 @@ public class Demo {
 		System.out.println("");
 		System.out.println("===PART5===");
 		for(int i = 1; i <= 100; i++ ) {
-			int decomal = i;
 			String roman = Part5.decimal2Roman(i);
 			System.out.println(i + " ====> " + roman + " ====> " + Part5.roman2Decimal(roman));
 		}

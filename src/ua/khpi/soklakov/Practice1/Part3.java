@@ -6,7 +6,7 @@ package ua.khpi.soklakov.Practice1;
  * @author soklakov
  *
  */
-public class Subtask03 {
+public class Part3 {
 
 	public static void main(String[] args) {
 		System.out.println("nod: " + nod(Integer.parseInt(args[0]), Integer.parseInt(args[1])));

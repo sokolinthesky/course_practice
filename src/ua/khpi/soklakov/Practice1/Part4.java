@@ -6,7 +6,7 @@ package ua.khpi.soklakov.Practice1;
  * @author soklakov
  *
  */
-public class Subtask04 {
+public class Part4 {
 
 	public static void main(String[] args) {
 		System.out.println("sum of digits: " + sumOfDigits(Integer.parseInt(args[0])));
