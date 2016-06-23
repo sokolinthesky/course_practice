@@ -2,6 +2,10 @@ package ua.khpi.soklakov.Practice5.part4;
 
 public class Part4 {
 
+	public static void main(String[] args) {
+		
+	}
+	
 	/**
 	 * Method create matrix with random numbers and have specified dimensions.
 	 * 

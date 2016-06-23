@@ -18,8 +18,8 @@ class Spam extends Thread {
 	 *            specified intervals.
 	 */
 	public Spam(String[] messages, int[] intervals) {
-		this.messages = messages;
-		this.intervals = intervals;
+		Spam.messages = messages;
+		Spam.intervals = intervals;
 	}
 
 	/**

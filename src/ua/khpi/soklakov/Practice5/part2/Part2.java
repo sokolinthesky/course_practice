@@ -23,7 +23,7 @@ public class Part2 {
 		// assign new value of standard input
 		System.setIn(bais);
 		// main functionality
-		Spam spam = new Spam(messages, intervals);
+		new Spam(messages, intervals);
 		Spam.main(args);
 		// waith for 3 sec
 		Thread.sleep(5000);
