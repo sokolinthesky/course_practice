@@ -1,19 +1,18 @@
 package ua.khpi.soklakov.Practice5.part2;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class Part2 {
-	
+
 	/**
-	 * Main method. 
+	 * Main method.
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		String[] messages = {"spam1","spam2","spam3","spam4","spam5"};
-		int[] intervals = {500,600,700,800,1000};
-		
 		// save standard input
 		InputStream stdIn = System.in;
 		// create input stream with line terminator (=ENTER)
@@ -22,15 +21,35 @@ public class Part2 {
 		bais.skip(System.lineSeparator().length());
 		// assign new value of standard input
 		System.setIn(bais);
-		// main functionality
-		new Spam(messages, intervals);
-		Spam.main(args);
-		// waith for 3 sec
+		Spam t = new Spam();
+		t.setDaemon(true);
+		t.start();
+		new Thread() {
+			public void run() {
+				byte[] buffer = new byte[10];
+				int count;
+				try {
+					do {
+						while ((count = System.in.read(buffer)) == -1)
+							;
+					} while (!System.lineSeparator().equals(new String(buffer, 0, count)));
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+				System.out.println("ENTER has been obtained");
+
+			}
+		}.start();
+		// Spam.main(args);
+		// waith for 5 sec
 		Thread.sleep(5000);
+		// main functionality
 		System.out.println("Try to send enter to standard input");
 		// move internal pointer to begin of input
 		bais.reset();
 		// restore standard input
 		System.setIn(stdIn);
+		t.setFlag(false);
 	}
+
 }
