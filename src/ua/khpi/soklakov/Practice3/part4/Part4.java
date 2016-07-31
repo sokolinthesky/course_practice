@@ -1,10 +1,13 @@
 package ua.khpi.soklakov.Practice3.part4;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Part4 {
 
+	private static final String ENCODING = "Cp1251";
+	
 	/**
 	 * Method generates password hash.
 	 * 
@@ -14,12 +17,12 @@ public class Part4 {
 	 *            algorithm type.
 	 * @return hash in byte array.
 	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException 
 	 */
-	private static byte[] hyteArray(String hashStr, String algoritmName) throws NoSuchAlgorithmException {
+	private static byte[] hyteArray(String hashStr, String algoritmName) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest digest = MessageDigest.getInstance(algoritmName);
-		digest.update(hashStr.getBytes());
-		byte[] hash = digest.digest();
-		return hash;
+		digest.update(hashStr.getBytes(ENCODING));
+		return digest.digest();
 	}
 
 	/**
@@ -31,13 +34,14 @@ public class Part4 {
 	 *            algorithm type.
 	 * @return hash.
 	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException 
 	 */
-	public static String hash(String hashStr, String algoritmName) throws NoSuchAlgorithmException {
+	public static String hash(String hashStr, String algoritmName) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String result = "";
 		byte[] hash = hyteArray(hashStr, algoritmName);
 
 		for (byte b : hash) {
-			result += parseNumberToHex(b);
+			result = result.concat(parseNumberToHex(b));
 		}
 
 		return result.toUpperCase();
@@ -61,7 +65,7 @@ public class Part4 {
 			String hexstr = Integer.toString(Integer.parseInt(str1, 2), 16);
 			String hexstr2 = Integer.toString(Integer.parseInt(str2, 2), 16);
 
-			result = hexstr + hexstr2;
+			result = result.concat(hexstr + hexstr2);
 
 		} else {
 			result = Integer.toString(Integer.parseInt(binary, 2), 16);

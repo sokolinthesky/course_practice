@@ -10,160 +10,190 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class parse text file by frequency, 
- * length and duplicates word.
+ * The class parse text file by frequency, length and duplicates word.
  * 
- * @author Eugene Jurkov
+ * @author Soklakov Oleg
  *
  */
 public class Part6 {
-	
+
 	/**
-	 * Returned the most frequency three word in the text.
+	 * Main method.
 	 * 
-	 * @param pathFile path to file.
+	 * @param args
+	 * 
+	 */
+	public static void main(String[] args) {
+		Part6 part6 = new Part6();
+		String[] splitInput = args[0].split(" ");
+		String[] splitTask = args[1].split(" ");
+		String filePath = splitInput[1];
+		String method = splitTask[1];
+
+		if (method.equals("frequency")) {
+			System.out.println("===================> Part61 ");
+			List<WordFreq> resultFreq = part6.frequency(filePath);
+			StringBuilder resultWordFreq = new StringBuilder();
+			for (WordFreq word : resultFreq) {
+				resultWordFreq.append(
+						word.getName().concat(" ==> ").concat(String.valueOf(word.getFrequency()).concat("\n")));
+			}
+
+			System.out.println(resultWordFreq.toString());
+
+		} else if (method.equals("length")) {
+			System.out.println("===================> Part62 ");
+			List<WordLength> resultLength = part6.length(filePath);
+			StringBuilder resultWordLength = new StringBuilder();
+			for (WordLength word : resultLength) {
+				resultWordLength
+						.append(word.getName().concat(" ==> ").concat(String.valueOf(word.getLength()).concat("\n")));
+			}
+
+			System.out.println(resultWordLength.toString());
+
+		} else if (method.equals("duplicates")) {
+			System.out.println("===================> Part63 ");
+			List<String> resultDuplicates = part6.duplicates((filePath));
+			for (String s : resultDuplicates) {
+				System.out.println(s);
+			}
+		}
+	}
+
+	/**
+	 * Method returned the most frequency three word in the text.
+	 * 
+	 * @param pathFile
+	 *            path to file.
 	 * @return the most frequency word in the text.
 	 */
-	public List<WordFreq> frequency(String pathFile){
-		String textFile = ReaderFromFile.getStringFromFile(pathFile);
-		
-		List<WordFreq> words = new ArrayList<WordFreq>();
-	
-		List<String> stringsTextFile = getString("([A-Za-z])+", textFile);
-		
-		for(String str : stringsTextFile){
-			int freq = Collections.frequency(stringsTextFile, str);
-			
-			words.add(new WordFreq(str, freq));
+	public List<WordFreq> frequency(String pathFile) {
+		String sTextFile = ReaderFromFile.getStringFromFile(pathFile);
+		List<WordFreq> lWords = new ArrayList<WordFreq>();
+		List<String> lStringsTextFile = getString("([A-Za-z])+", sTextFile);
+
+		for (String str : lStringsTextFile) {
+			int freq = Collections.frequency(lStringsTextFile, str);
+
+			lWords.add(new WordFreq(str, freq));
 		}
-		
-		Set<WordFreq> sortWordsByFrequency = new TreeSet<WordFreq>(words);
-		
-		WordFreq[] r = new WordFreq[sortWordsByFrequency.size()];
-		sortWordsByFrequency.toArray(r);
-		
-		List<WordFreq> result = lastNWords(3, r);
-		
-		Collections.sort(result, new Comparator<WordFreq>(){
+
+		Set<WordFreq> sortWordsByFrequency = new TreeSet<WordFreq>(lWords);
+		WordFreq[] wordFreq = new WordFreq[sortWordsByFrequency.size()];
+		sortWordsByFrequency.toArray(wordFreq);
+		List<WordFreq> lResult = lastWords(3, wordFreq);
+
+		Collections.sort(lResult, new Comparator<WordFreq>() {
 
 			@Override
 			public int compare(WordFreq word1, WordFreq word2) {
 				return word1.getName().compareToIgnoreCase(word2.getName());
 			}
-			
+
 		});
-		
-		Collections.reverse(result);
-		
-		return result;
+
+		Collections.reverse(lResult);
+
+		return lResult;
 	}
-	
-	
+
 	/**
-	 * Returned the biggest length three word in the text.
+	 * Method returned the biggest length three word in the text.
 	 * 
-	 * @param pathFile path to file.
+	 * @param pathFile
+	 *            path to file.
 	 * @return the biggest length three word in the text.
 	 */
-	public List<WordLength> length(String pathFile){
-		String textFile = ReaderFromFile.getStringFromFile(pathFile);
-		
-		List<WordLength> words = new ArrayList<WordLength>();
-	
-		List<String> stringsTextFile = getString("([A-Za-z])+", textFile);
-		
-		for(String str : stringsTextFile){
-			words.add(new WordLength(str));
+	public List<WordLength> length(String pathFile) {
+		String sTextFile = ReaderFromFile.getStringFromFile(pathFile);
+		List<WordLength> lWords = new ArrayList<WordLength>();
+		List<String> lStringsTextFile = getString("([A-Za-z])+", sTextFile);
+
+		for (String str : lStringsTextFile) {
+			lWords.add(new WordLength(str));
 		}
-		
-		Set<WordLength> sortWordsByLength = new TreeSet<WordLength>(words);
-		
+
+		Set<WordLength> sortWordsByLength = new TreeSet<WordLength>(lWords);
 		WordLength[] r = new WordLength[sortWordsByLength.size()];
 		sortWordsByLength.toArray(r);
-		
-		List<WordLength> result = lastNWords(3, r);
-		
+		List<WordLength> result = lastWords(3, r);
 		Collections.reverse(result);
-		
-		return result;	
+
+		return result;
 	}
-	
+
 	/**
-	 * Returned first three word which have duplicates 
-	 * in the text.
+	 * Method returned first three word which have duplicates in the text.
 	 * 
-	 * @param pathFile path to file.
-	 * @return first three word which have duplicates 
-	 * 		   in the text.
+	 * @param pathFile
+	 *            path to file.
+	 * @return first three word which have duplicates in the text.
 	 */
-	public List<String> duplicates(String pathFile){
-		String textFile = ReaderFromFile.getStringFromFile(pathFile);
-		
-		List<String> wordsDuplicates = new ArrayList<String>();
-	
-		List<String> stringsTextFile = getString("([A-Za-z])+", textFile);
-		
-		int freq = 0;
-		for(String str : stringsTextFile){
-			freq = Collections.frequency(stringsTextFile, str);
-			
-			if(freq > 1){
-				
-				if(!wordsDuplicates.contains(str)){
-					wordsDuplicates.add(str);
-				}
+	public List<String> duplicates(String pathFile) {
+		String sTextFile = ReaderFromFile.getStringFromFile(pathFile);
+		List<String> lWordsDuplicates = new ArrayList<String>();
+		List<String> lStringsTextFile = getString("([A-Za-z])+", sTextFile);
+		int frequency = 0;
+
+		for (String str : lStringsTextFile) {
+			frequency = Collections.frequency(lStringsTextFile, str);
+			if (frequency > 1 && !lWordsDuplicates.contains(str)) {
+				lWordsDuplicates.add(str);
 			}
 		}
-		
-		Collections.reverse(wordsDuplicates);
-		
-		String[] wordsDuplicatesArray = new String[wordsDuplicates.size()];
-		
-		wordsDuplicates.toArray(wordsDuplicatesArray);
-		
-		List<String> result = lastNWords(3, wordsDuplicatesArray);
-		
-		result = inverseUpperCase(result);
-		
+
+		Collections.reverse(lWordsDuplicates);
+		String[] wordsDuplicatesArray = new String[lWordsDuplicates.size()];
+		lWordsDuplicates.toArray(wordsDuplicatesArray);
+		List<String> result = lastWords(3, wordsDuplicatesArray);
+		result = inverseToUpperCase(result);
+
 		return result;
 	}
-	
-	private List<String> inverseUpperCase(List<String> list){
-		
-		List<String> result = new ArrayList<>();
-		
-		for(String str : list){
-			 result.add(reverse(str).toUpperCase());
-		}
-		
-		return result;
-	}
-	
-	private String reverse(String str) {
-	    int i = str.length();
-	    int len = str.length();
-	    
-	    StringBuilder dest = new StringBuilder(len);
-	    
-	    for (i = (len - 1); i >= 0; i--) {
-	      dest.append(str.charAt(i));
-	    }
-	    
-	    return dest.toString();
-	  }
-	
-	private <T> List<T> lastNWords(int n, T[] array){
-		List<T> result = new ArrayList<>();
-		
-		for(int i = array.length - 3; i <= array.length - 1; i++){
-			result.add(array[i]);
-		}
-		
-		return result;
-	}
-	
+
 	/**
-	 * Get the String on regular expression.
+	 * Method returns list with upper case strings.
+	 * 
+	 * @param list
+	 *            specified list.
+	 * @return list with upper case strings.
+	 */
+	private List<String> inverseToUpperCase(List<String> list) {
+		List<String> lResult = new ArrayList<>();
+
+		for (String str : list) {
+			lResult.add(reverse(str).toUpperCase());
+		}
+
+		return lResult;
+	}
+
+	private String reverse(String str) {
+		int count = str.length();
+		int iLength = str.length();
+		StringBuilder sResult = new StringBuilder(iLength);
+
+		for (count = (iLength - 1); count >= 0; count--) {
+			sResult.append(str.charAt(count));
+		}
+
+		return sResult.toString();
+	}
+
+	private <T> List<T> lastWords(int n, T[] array) {
+		List<T> lLastWords = new ArrayList<>();
+
+		for (int i = array.length - n; i <= array.length - 1; i++) {
+			T item = array[i];
+			lLastWords.add(item);
+		}
+
+		return lLastWords;
+	}
+
+	/**
+	 * Method return the String on regular expression.
 	 * 
 	 * @param regExp
 	 *            regular expression on which parse string.
@@ -172,71 +202,13 @@ public class Part6 {
 	private List<String> getString(String regExp, String stringToParse) {
 		Pattern pattern = Pattern.compile(regExp);
 		Matcher matcher = pattern.matcher(stringToParse);
-
-		List<String> result = new ArrayList<>();
+		List<String> lResult = new ArrayList<>();
 
 		while (matcher.find()) {
 			String str = stringToParse.substring(matcher.start(), matcher.end());
-			result.add(str);
+			lResult.add(str);
 		}
-		return result;
+		return lResult;
 	}
-	
-	/**
-	 * Main.
-	 * 
-	 * @param args //
-	 */
-	public static void main(String[] args){
-		Part6 part6 = new Part6();
-		String pathFile;
-		String howMethod;
-		
-		if(args.length < 1){
-			pathFile = "src/text";
-			howMethod = "frequency";
-		}
-		else{
-			pathFile = args[0];
-			howMethod = args[1];
-		}
-		
-		if(howMethod.equals("frequency")){
-			System.out.println("Part1 ===================>");
-		
-			List<WordFreq> resultFreq =	part6.frequency(pathFile);
-		
-			StringBuilder resultWordFreq = new StringBuilder(); 
-			for(WordFreq word : resultFreq){
-				resultWordFreq.append(word.getName().concat(" ==> ").concat(
-						String.valueOf(word.getFrequency()).concat("\n")));
-			}
-		
-			System.out.println(resultWordFreq.toString());
-		}
-			
-		if(howMethod.equals("length")){
-			System.out.println("Part2 ===================>");
-		
-			List<WordLength> resultLength =	part6.length(pathFile);
-		
-			StringBuilder resultWordLength = new StringBuilder(); 
-			for(WordLength word : resultLength){
-				resultWordLength.append(word.getName().concat(" ==> ").concat(
-						String.valueOf(word.getLength()).concat("\n")));
-			}
-		
-			System.out.println(resultWordLength.toString());
-		}
-		
-		if(howMethod.equals("duplicates")){
-			System.out.println("Part3 ===================>");
-		
-			List<String> resultDuplicates = part6.duplicates((pathFile));
-		
-			for(String s : resultDuplicates){
-				System.out.println(s);
-			}
-		}
-	}
+
 }

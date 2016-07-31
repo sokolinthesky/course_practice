@@ -6,39 +6,80 @@ import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Note!!! Without synchronization this application not work properly!! Most
+ * likely a runtime exception will be thrown..
+ * 
+ */
 public class Part53 {
 
+	static final Lock MONITOR = new ReentrantLock(true);
+	
 	private static final int ITERATION_NUMBER = 3;
 
-	private static final int READERS_NUMBER = 3;
+	private static final int READERS = 3;
 
 	// shared resource (not thread-safe!!!)
-	private static final StringBuilder BUFFER = new StringBuilder();
+	private static final StringBuilder MY_BUFFER = new StringBuilder();
+	
+	private static boolean bIsWrite = false;
 
-	private static final int BUFFER_LENGTH = 5;
-
+	private static boolean bStop;
+	
 	// speed parameter
-	private static final int PAUSE = 5;
+	private static final int I_PAUSE = 5;
 
-	// stop signal
-	private static boolean stop;
+	private static final int LENGTH_BUFFER = 5;
+	
+	/**
+	 * Main method.
+	 * 
+	 * @param args
+	 * @throws InterruptedException
+	 */
+	public static void main(String[] args) throws InterruptedException {
+		// create writer
+		Writer wWriter = new Writer();
 
-	private static final Lock lock = new ReentrantLock();
-	private static final Lock lock2 = new ReentrantLock();
+		// create readers
+		List<Thread> lReaders = new ArrayList<>();
+		for (int i = 0; i < READERS; i++) {
+			lReaders.add(new Reader());
+		}
 
-	private static int readerCount = 0;
+		// start readers
+		Thread.sleep(10);
+		for (Thread rReader : lReaders) {
+			rReader.start();
+		}
+
+		// start writer
+		Thread.sleep(10);
+		wWriter.start();
+
+		// main thread is waiting for the child threads
+		wWriter.join();
+		for (Thread rReader : lReaders) {
+			rReader.join();
+		}
+	}
 
 	// reader
 	private static class Reader extends Thread {
-		public void run() {
-			while (!stop) {
-				try {
 
+		public void run() {
+			while (!bStop) {
+				try {
+					MONITOR.lock();
 					// read from the buffer
-					read(getName());
+					if (bIsWrite) {
+						read(getName());
+					}
 
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
+				} finally {
+					MONITOR.unlock();
 				}
 			}
 		}
@@ -47,98 +88,65 @@ public class Part53 {
 	// writer
 	private static class Writer extends Thread {
 		public void run() {
-			int tact = 0;
-			while (!stop) {
+			int iCount = 0;
+			while (!bStop) {
 				try {
-
-					// write to the buffer
+					MONITOR.lock();
 					write();
+					bIsWrite = true;
+					sleep(5);
 
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				} finally {
-					if (++tact == ITERATION_NUMBER) {
-						stop = true;
+					iCount++;
+					if (iCount == ITERATION_NUMBER) {
+						bStop = true;
 					}
+					MONITOR.unlock();
+
 				}
 			}
 		}
 	}
 
+	/**
+	 * Reading method.
+	 * 
+	 * @param threadName
+	 *            specified thread.
+	 * @throws InterruptedException
+	 */
 	private static void read(String threadName) throws InterruptedException {
-		lock.lock();
-
-		try {
-			readerCount++;
-			if (readerCount <= READERS_NUMBER) {
-				Thread.sleep(20);
-				System.out.printf("Reader %s:", threadName);
-				for (int j = 0; j < BUFFER_LENGTH; j++) {
-					Thread.sleep(PAUSE);
-					System.out.print(BUFFER.charAt(j));
-				}
-				
-				System.out.println();
-				
-				Thread.sleep(5);
-				
-			} 
-		} finally {
-			lock.unlock();
+		System.out.printf("Reader %s:", threadName);
+		for (int i = 0; i < LENGTH_BUFFER; i++) {
+			Thread.sleep(I_PAUSE);
+			System.out.print(MY_BUFFER.charAt(i));
 		}
-		Thread.sleep(1000);
-		readerCount = 0;
-		
+		System.out.println();
+		Thread.sleep(5);
 	}
 
+	/**
+	 * Writing method.
+	 * 
+	 * @throws InterruptedException
+	 */
 	private static void write() throws InterruptedException {
-		lock2.lock();
-		try {
-			// clear buffer
-			BUFFER.setLength(0);
+		// clear buffer
+		MY_BUFFER.setLength(0);
 
-			// write to buffer
-			System.err.print("Writer writes:");
+		// write to buffer
+		System.err.print("Writer writes:");
 
-			Random random = new Random();
-			for (int j = 0; j < BUFFER_LENGTH; j++) {
-				Thread.sleep(PAUSE);
-				char ch = (char) ('A' + random.nextInt(26));
-				System.err.print(ch);
-				BUFFER.append(ch);
-			}
-			System.err.println();
-			Thread.sleep(1000);
-
-			Thread.sleep(5);
-		} finally {
-			lock2.unlock();
+		Random rRandom = new Random();
+		for (int i = 0; i < LENGTH_BUFFER; i++) {
+			Thread.sleep(I_PAUSE);
+			char ch = (char) ('A' + rRandom.nextInt(26));
+			System.err.print(ch);
+			MY_BUFFER.append(ch);
 		}
-	}
-
-	public static void main(String[] args) throws InterruptedException {
-		// create writer
-		Writer writer = new Writer();
-
-		// create readers
-		List<Thread> readers = new ArrayList<>();
-		for (int j = 0; j < READERS_NUMBER; j++) {
-			readers.add(new Reader());
-		}
-
-		// start writer
-		writer.start();
-
-		// start readers
-		Thread.sleep(10);
-		for (Thread reader : readers) {
-			reader.start();
-		}
-
-		// main thread is waiting for the child threads
-		writer.join();
-		for (Thread reader : readers) {
-			reader.join();
-		}
+		System.err.println();
+		Thread.sleep(5);
 	}
 }

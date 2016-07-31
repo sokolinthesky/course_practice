@@ -2,38 +2,30 @@ package ua.khpi.soklakov.Practice5.part6;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 
 public class Part6 {
 
-	private static File file;
+	private File file = new File("part6.txt");
 	private static RandomAccessFile raf;
-	private static int pointer = 0;
+	private int pointer = 0;
 
 	/**
-	 * Constructor init fields and delete file if exist.
+	 * Delete file if exist.
 	 */
-	public Part6() {
+	public void checkFile() {
 		if (file != null) {
 			try {
-				delete(file.getName());
-				System.out.println("file delete");
+				delete(this.file.getName());
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				System.out.println("Exception in constructor part6");
 			}
-		}
-
-		if (file == null && raf == null) {
-
-			Part6.file = new File("part6.txt");
-			try {
-				Part6.raf = new RandomAccessFile(file, "rw");
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+		} else {
+			this.file = new File("part6.txt");
 		}
 	}
 
@@ -44,28 +36,30 @@ public class Part6 {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		new Part6();
+		Part6 part6 = new Part6();
+		part6.checkFile();
+		Part6.raf = new RandomAccessFile(part6.file, "rw");
 		MyThread[] threads = new MyThread[10];
 
 		for (int i = 0; i <= 9; i++) {
 			Integer number = i;
-			MyThread thread = new MyThread(number.toString(), pointer);
+			MyThread thread = new MyThread(number.toString(), part6.pointer);
 			threads[i] = thread;
 			thread.start();
-			pointer += 21;
+			part6.pointer += 21;
 		}
-		
+
 		for (MyThread th : threads) {
 			try {
 				th.join();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				System.out.println("InterruptedException");
 			}
 		}
 
 		raf.close();
 
-		System.out.println(getStringFromFile(file.getName()));
+		System.out.println(getStringFromFile(part6.file.getName()));
 	}
 
 	/**
@@ -80,8 +74,9 @@ public class Part6 {
 	public static void writeToFile(int pointer, String string) throws IOException {
 		synchronized (raf) {
 			raf.seek(pointer);
-			raf.write(string.getBytes());
+			raf.write(string.getBytes("cp1251"));
 		}
+
 	}
 
 	/**
@@ -122,9 +117,9 @@ public class Part6 {
 	 *            specified file name.
 	 * @throws FileNotFoundException
 	 */
-	public static void delete(String nameFile) throws FileNotFoundException {
+	public static boolean delete(String nameFile) throws FileNotFoundException {
 		exists(nameFile);
-		new File(nameFile).delete();
+		return new File(nameFile).delete();
 	}
 
 	/**
@@ -139,24 +134,25 @@ public class Part6 {
 	public static String getStringFromFile(String nameFile) {
 		File f = new File(nameFile);
 
-		StringBuilder sb = new StringBuilder();
+		StringBuilder strBuil = new StringBuilder();
 
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(f.getAbsolutePath()));
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(f.getAbsolutePath()), "Cp1251"));
 			try {
-				String s;
-				while ((s = in.readLine()) != null) {
-					sb.append(s);
-					sb.append("\n");
+				String st;
+				while ((st = bufferedReader.readLine()) != null) {
+					strBuil.append(st);
+					strBuil.append("\n");
 				}
 			} finally {
-				in.close();
+				bufferedReader.close();
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			System.out.println("IOException in getStringFromFile");
 		}
 
-		return sb.toString();
+		return strBuil.toString();
 	}
 
 }

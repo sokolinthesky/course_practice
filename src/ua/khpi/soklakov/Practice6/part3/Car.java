@@ -37,23 +37,30 @@ public class Car {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Car other = (Car) obj;
 		if (model == null) {
-			if (other.model != null)
+			if (other.model != null) {
 				return false;
-		} else if (!model.equals(other.model))
+			}
+		} else if (!model.equals(other.model)) {
 			return false;
+		}
 		if (number == null) {
-			if (other.number != null)
+			if (other.number != null) {
 				return false;
-		} else if (!number.equals(other.number))
+			}
+		} else if (!number.equals(other.number)) {
 			return false;
+		}
 		return true;
 	}
 

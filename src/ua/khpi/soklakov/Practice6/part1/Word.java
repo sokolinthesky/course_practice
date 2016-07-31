@@ -3,7 +3,7 @@ package ua.khpi.soklakov.Practice6.part1;
 import java.util.Comparator;
 
 public class Word {
-	private static final int DEFAULT_FREQUENCY = 1; 
+	private static final int DEFAULT_FREQUENCY = 1;
 
 	private String word;
 	private Integer frequency = DEFAULT_FREQUENCY;
@@ -38,18 +38,23 @@ public class Word {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Word other = (Word) obj;
 		if (word == null) {
-			if (other.word != null)
+			if (other.word != null) {
 				return false;
-		} else if (!word.equals(other.word))
+			}
+		} else if (!word.equals(other.word)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -62,16 +67,20 @@ public class Word {
 		return word + ": " + frequency;
 	}
 
-	static Comparator<Word> snorderer = new Comparator<Word>() {
+	private static Comparator<Word> snorderer = new Comparator<Word>() {
 
 		public int compare(Word o1, Word o2) {
-			if(!o1.getFrequency().equals(o2.getFrequency()) ) {
-				return o1.getFrequency().compareTo(o2.getFrequency());
+			if (!o2.getFrequency().equals(o1.getFrequency())) {
+				return o2.getFrequency().compareTo(o1.getFrequency());
 			} else {
-				return o2.getWord().compareTo(o1.getWord());
+				return o1.getWord().compareTo(o2.getWord());
 			}
-			
+
 		}
 	};
+	
+	public static Comparator<Word> getSnorderer () {
+		return snorderer;
+	}
 
 }

@@ -23,7 +23,7 @@ public class Part3 {
 			String[] splitStr = s.split(" ");
 			for (int i = 0; i < splitStr.length; i++) {
 				splitStr[i] = firstUpperCase(splitStr[i].toLowerCase());
-				sRes += splitStr[i] + " ";
+				sRes = sRes.concat(splitStr[i] + " ");
 			}
 			sRes += "\n";
 		}
@@ -39,8 +39,9 @@ public class Part3 {
 	 * @return string with to begin with upper case letter.
 	 */
 	private static String firstUpperCase(String word) {
-		if (word == null || word.isEmpty())
+		if (word == null || word.isEmpty()) {
 			return "";
+		}
 		return word.substring(0, 1).toUpperCase() + word.substring(1);
 	}
 

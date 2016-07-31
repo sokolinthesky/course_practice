@@ -1,11 +1,37 @@
 package ua.khpi.soklakov.Practice5.part4;
 
+/**
+ * Part4.
+ * 
+ * @author O.Soklakov
+ *
+ */
 public class Part4 {
 
-	public static void main(String[] args) {
-		
+	/**
+	 * Main method. Test.
+	 * 
+	 * @param args
+	 * @throws InterruptedException
+	 */
+	public static void main(String[] args) throws InterruptedException {
+		int[][] array = Part4.getArrayWithCustomSizeAndRandomNumbers(4, 100, 100);
+		try {
+			long startTime = System.currentTimeMillis();
+			Part4.findMaxIntegersByThreads(array);
+			long timeSpent = System.currentTimeMillis() - startTime;
+			System.out.println("Threds - " + timeSpent);
+		} catch (InterruptedException e) {
+			System.out.println("InterruptedException in main");
+		}
+
+		long startTime2 = System.currentTimeMillis();
+		Part4.findMaxInteger(array);
+		long timeSpent2 = System.currentTimeMillis() - startTime2;
+		System.out.println("Without threds - " + timeSpent2);
+
 	}
-	
+
 	/**
 	 * Method create matrix with random numbers and have specified dimensions.
 	 * 

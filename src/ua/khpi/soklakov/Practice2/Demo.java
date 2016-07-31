@@ -3,55 +3,59 @@ package ua.khpi.soklakov.Practice2;
 import java.util.Iterator;
 
 public class Demo {
-
+	
+	/**
+	 * Main method.
+	 * Test.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		MyListImpl list = new MyListImpl();
 		
-		list.add(new String("a"));
-		list.add(new String("c"));
-		list.add(433);
-		list.add(new String("n"));
+		System.out.println("Test adding:");
+		list.add("e");
+		list.add("cn");
+		list.add(133);
+		list.add("ncc");
+
+		System.out.println("Size of list after adding = " + list.size());
+
+		System.out.println("iterator test:");
+		Iterator<Object> itratorList = list.iterator();
+		while (itratorList.hasNext()) {
+			System.out.println(itratorList.next());
+		}
 		
-		System.out.println("Size of list = " + list.size());
-		
-		for(Object object : list){
+		System.out.println("for each test:");
+		for (Object object : list) {
 			System.out.println(object);
 		}
-		
-		Iterator<Object> itrList = list.iterator();
-		while(itrList.hasNext()){
-			System.out.println(itrList.next());	
-		}
-		
+
+		System.out.println("list items:");
 		System.out.println(list);
-		
-		MyList testList = new MyListImpl();
-		
-		testList.add("a");
-		testList.add(433);
-		
-		System.out.println("Does contains teseList in list ? = " +
-						   list.containsAll(testList));
-		
-		System.out.println("Does contains element 'a' in list ? = " + 
-						   list.contains("a"));
-		
-		Object[] arrayOfList = list.toArray();
+
+		MyList newList = new MyListImpl();
+		newList.add("e");
+		newList.add(133);
+		System.out.println("Does contains teseList in list? = " + list.containsAll(newList));
+		System.out.println("Does contains element 'e' in list? = " + list.contains("e"));
+
+		Object[] array = list.toArray();
 		String strArrayOfList = "";
-		
-		for(Object element : arrayOfList)
-			strArrayOfList = strArrayOfList + element + ","; 
-		
-		System.out.println("To array list = " + strArrayOfList);
-		
-		System.out.println("Does delete element = 433 ? " + list.remove(433));
-		
-		list.remove("c");
-		System.out.println("Remove " + list);
-		
+
+		for (Object element : array) {
+			strArrayOfList = strArrayOfList.concat(element + ",");
+		}
+		System.out.println("Test to array list = " + strArrayOfList);
+
+		System.out.println("delete element 133 " + list.remove(133));
+
+		list.remove("cn");
+		System.out.println("Result after remove remove " + list);
 		ListIterator listIterator = list.listIterator();
-		
-		while(listIterator.hasPrevious()){
+
+		System.out.println("Previous test:");
+		while (listIterator.hasPrevious()) {
 			System.out.println("previous: " + listIterator.previous());
 		}
 	}

@@ -9,89 +9,89 @@ import java.util.Set;
 /**
  * Subtask2.
  * 
- * @author soklakov
+ * @author Soklakov Oleg
  *
  */
 public class Part2 {
 
 	/**
-	 * Method returns words which have maximum and minimum letters in the word.
+	 * The method returns words which have maximum and minimum letters in the
+	 * word.
 	 * 
 	 * @param input
-	 *            string
-	 * @return words wich have maximum and minimum letters in the word.
+	 *            specified string
+	 * @return words which have maximum and minimum letters in the word.
 	 */
 	public static String convert(String input) {
-		String sRes = "";
-		String maxWords = "Max: ";
-		String minWords = "Min: ";
-		String[] splitInput = input.split("\n");
-		List<String> listWords = new ArrayList<String>();
-		Set<String> minWordsList = new HashSet<String>();
-		Set<String> maxWordsList = new HashSet<String>();
-
+		String sResult = "";
+		String sMaxWords = "Max: ";
+		String sMinWords = "Min: ";
 		int minSize = 1;
 		int maxSize = 1;
+		String[] aSplitInput = input.split("\n");
+		Set<String> setMinWords = new HashSet<String>();
+		Set<String> setMaxWords = new HashSet<String>();
+		List<String> lWords = new ArrayList<String>();
 
-		for (int i = 0; i < splitInput.length; i++) {
-			String[] spl = splitInput[i].split(" ");
-			for (String s : spl) {
+		for (int i = 0; i < aSplitInput.length; i++) {
+			String[] splip = aSplitInput[i].split(" ");
+			for (String s : splip) {
 				if (s.contains("'")) {
 					String[] aStr = s.split("'");
-					listWords.add(aStr[0]);
-					listWords.add(aStr[1]);
+					lWords.add(aStr[0]);
+					lWords.add(aStr[1]);
 
 				} else if (s.contains("-")) {
 					String[] aStr = s.split("-");
-					listWords.add(aStr[0]);
-					listWords.add(aStr[1]);
+					lWords.add(aStr[0]);
+					lWords.add(aStr[1]);
 
 				} else if (s.contains(",")) {
 					String[] aStr = s.split(",");
 					for (String sStr : aStr) {
-						if (sStr.equals("")) {
-						} else {
-							listWords.add(sStr);
+						if (!sStr.equals("")) {
+							lWords.add(sStr);
 						}
 					}
 				} else {
-					listWords.add(s);
+					lWords.add(s);
 				}
 			}
 		}
 
-		for (String s : listWords) {
+		for (String s : lWords) {
 			if (s.length() > maxSize) {
 				maxSize = s.length();
 			}
 		}
 
-		for (int i = 0; i < listWords.size(); i++) {
-			if (listWords.get(i).length() == minSize) {
-				minWordsList.add(listWords.get(i));
+		for (int i = 0; i < lWords.size(); i++) {
+			if (lWords.get(i).length() == minSize) {
+				setMinWords.add(lWords.get(i));
 			}
 		}
 
-		for (String s : minWordsList) {
+		for (String s : setMinWords) {
 			if (s.length() == minSize) {
-				minWords += s + ", ";
+				sMinWords = sMinWords.concat(s + ", ");
 			}
 		}
 
-		for (int i = 0; i < listWords.size(); i++) {
-			if (listWords.get(i).length() == maxSize) {
-				maxWordsList.add(listWords.get(i));
+		for (int i = 0; i < lWords.size(); i++) {
+			if (lWords.get(i).length() == maxSize) {
+				setMaxWords.add(lWords.get(i));
 			}
 		}
 
-		for (String s : maxWordsList) {
+		for (String s : setMaxWords) {
 			if (s.length() == maxSize) {
-				maxWords += s + ", ";
+				sMaxWords = sMaxWords.concat(s + ", ");
 			}
 		}
-		sRes += minWords.substring(0, minWords.length() - 1) + "\n" + maxWords.substring(0, maxWords.length() - 1);
+		sResult = sResult.concat(
+				sMinWords.substring(0, sMinWords.length() - 1) + "\n" + sMaxWords.substring(0, sMaxWords.length() - 1));
 
-		return sRes;
+		return sResult;
 	}
 
 }

@@ -4,86 +4,63 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * This class implementation of the MyList interface.
- * @author Eugene Jurkov
- * @version 1.0
+ * Implementation of the MyList interface.
+ * 
+ * @author Soklakov Oleg
  */
-public class MyListImpl implements MyList, ListIterable{
-	
+public class MyListImpl implements MyList, ListIterable {
+
 	/**
 	 * Reference to first node.
 	 */
 	private Node headList;
-	
+
 	/**
 	 * Reference to last node.
 	 */
 	private Node tailList;
-	
+
 	/**
-	 * Number of elements of list.
+	 * The number of elements of list.
 	 */
 	private int size;
-	
+
 	/**
-	 * Constructor of empty list.
+	 * Default constructor of empty list.
 	 */
-	public MyListImpl(){
+	public MyListImpl() {
 		headList = null;
 		tailList = null;
 		size = 0;
 	}
-	
+
 	/**
-	 * This inner class represents node of the list.
+	 * Inner static class represents node of the list.
 	 * 
 	 */
-	private class Node{
-		
-		/**
-		 * Reference to the next node of the list.
-		 */
-		Node next;
-		
+	private static class Node {
+
 		/**
 		 * Reference to the previous node of the list.
 		 */
-		Node prev;
-		
+		private Node previous;
+
+		/**
+		 * Reference to the next node of the list.
+		 */
+		private Node next;
+
 		/**
 		 * Content of the node.
 		 */
-		Object item;
-		
-		public Node(Node prev ,Object object, Node next){
-			this.prev = prev;
+		private Object item;
+
+		public Node(Node prev, Object object, Node next) {
+			this.previous = prev;
 			item = object;
 			this.next = next;
 		}
 	}
-	
-	/**
-	 * This method appends the specified element to the end List.
-	 * 
-	 * @param object which will be add
-	 */
-	@Override
-	public void add(Object object) {
-		Node oldTailList = tailList;
-		Node newTailList = new Node(oldTailList ,object, null);
-		
-		if(oldTailList == null){
-			tailList = newTailList;
-			headList = tailList;
-		}
-		else{
-			oldTailList.next = newTailList;
-			tailList = newTailList;
-		}
-		
-		size++;
-	}
-	
 
 	/**
 	 * This method removes all the elements of this list.
@@ -94,64 +71,85 @@ public class MyListImpl implements MyList, ListIterable{
 		tailList = null;
 		size = 0;
 	}
-	
+
 	/**
-	 * Return true if the element removed form list 
+	 * This method add the specified element to the end List.
+	 * 
+	 * @param specified
+	 *            oject.
+	 */
+	@Override
+	public void add(Object object) {
+		Node tailListOld = tailList;
+		Node tailListNew = new Node(tailListOld, object, null);
+
+		if (tailListOld == null) {
+			tailList = tailListNew;
+			headList = tailList;
+		} else {
+			tailListOld.next = tailListNew;
+			tailList = tailListNew;
+		}
+
+		size++;
+	}
+
+	/**
+	 * Return true if the element removed form list
 	 * 
 	 * @return true if the element removed from list
 	 */
 	@Override
 	public boolean remove(Object object) {
-		
-		if(object == null)
+
+		if (object == null) {
 			return false;
-		
-		for(Node x = headList; x != null; x = x.next){
-			if(object.equals(x.item)){
-				Node prevX = x.prev;
-				Node nextX = x.next;
-				
-				if(prevX == null){
+		}
+
+		for (Node n = headList; n != null; n = n.next) {
+			if (object.equals(n.item)) {
+				Node prevN = n.previous;
+				Node nextX = n.next;
+
+				if (prevN == null) {
 					headList = nextX;
+				} else {
+					prevN.next = n.next;
 				}
-				else{
-					prevX.next = x.next;
+
+				if (nextX == null) {
+					tailList = prevN;
+				} else {
+					nextX.previous = prevN;
 				}
-				
-				if(nextX == null){
-					tailList = prevX;
-				}
-				else{
-					nextX.prev = prevX;
-				}
-				
+
 				size--;
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Returned array contains all elements of the list.
+	 * Method returns array contains all elements of the list.
 	 * 
 	 * @return array contains all elements of the list.
 	 */
 	@Override
 	public Object[] toArray() {
-		Object[] arrayElementsOfList = new Object[size];
+		Object[] array = new Object[size];
 		int i = 0;
-		
-		for(Node x = headList; x != null; x = x.next){
-			arrayElementsOfList[i] = x.item;
+
+		for (Node n = headList; n != null; n = n.next) {
+			array[i] = n.item;
 			i++;
 		}
-		
-		return arrayElementsOfList;
+
+		return array;
 	}
-	
+
 	/**
-	 * Returns the number of elements of list.
+	 * Returns size, the number of elements of list.
 	 * 
 	 * @return the number of elements of list.
 	 */
@@ -159,92 +157,96 @@ public class MyListImpl implements MyList, ListIterable{
 	public int size() {
 		return size;
 	}
-	
+
 	/**
-	 * Returned true if the specified element contains in list.
+	 * Method returned true if the specified element contains in list.
 	 * 
-	 * @param object is the specified element which will be checked. 
+	 * @param object
+	 *            is the specified element which will be checked.
 	 * @return true if the specified element contains in list.
 	 */
 	@Override
 	public boolean contains(Object object) {
-		for(Node x = headList; x != null; x = x.next){
-			if(object.equals(x.item))
+		for (Node n = headList; n != null; n = n.next) {
+			if (object.equals(n.item)) {
 				return true;
+			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
-	 * Returns true if this list contains the specified list.
+	 * Method returns true if this list contains the specified list.
 	 * 
-	 * @param myList is the specified collection to contain in list.
+	 * @param myList
+	 *            is the specified collection to contain in list.
 	 * @return true if this list contains the specified collection.
 	 */
 	@Override
 	public boolean containsAll(MyList myList) {
+		Object[] array = toArray();
 		int count = 0;
-		Object[] arrayMyList = toArray();
-		
-		for(Node x = headList; x != null; x = x.next){
-			for(Object objectMyList : arrayMyList){
-				if(x.item.equals(objectMyList)){
+
+		for (Node n = headList; n != null; n = n.next) {
+			for (Object object : array) {
+				if (n.item.equals(object)) {
 					count++;
 				}
 			}
 		}
-		
-		if(count < arrayMyList.length)
+
+		if (count < array.length) {
 			return false;
-		
+		}
+
 		return true;
 	}
-	
+
 	/**
 	 * Returns the string with all elements of list
 	 * 
 	 * @return the string with all elements of list.
 	 */
 	@Override
-	public String toString(){
-		String resultStr = "";
-		for(Node x = headList; x != null; x = x.next){
-			resultStr = resultStr + "[" + x.item + "],";
+	public String toString() {
+		String result = "";
+		for (Node n = headList; n != null; n = n.next) {
+			result = result.concat("[" + n.item + "],");
 		}
-		
-		resultStr = "{" + resultStr + "}";
-		return resultStr;
+
+		result = result.concat("{" + result + "}");
+		return result;
 	}
-	
+
 	/**
 	 * This class implements Iterator Interface.
 	 */
-	private class IteratorImpl implements Iterator<Object>{
-		
+	private class IteratorImpl implements Iterator<Object> {
+
 		/**
 		 * Reference to the next element after last returned.
 		 */
 		private Node next;
-		
+
 		/**
 		 * Last returned element by Iterator.
 		 */
 		private Node lastReturned;
-		
+
 		/**
 		 * Index of the last returned element.
 		 */
-		int index;
-		
+		private int index;
+
 		/**
 		 * Constructor of the Iterator.
 		 */
-		public IteratorImpl(){
+		public IteratorImpl() {
 			next = headList;
 			index = 0;
 		}
-		
+
 		/**
 		 * Returned true if there is next element.
 		 * 
@@ -254,58 +256,57 @@ public class MyListImpl implements MyList, ListIterable{
 		public boolean hasNext() {
 			return index < size;
 		}
-		
+
 		/**
-		 * Returns the next element in the iteration. 
-		 *  
+		 * Method returns the next element in the iteration.
+		 * 
 		 * @return the next element in the iteration.
 		 */
 		@Override
 		public Object next() {
-			if(!hasNext())
+			if (!hasNext()) {
 				throw new NoSuchElementException();
-			
+			}
+
 			lastReturned = next;
 			next = next.next;
 			index++;
 			return lastReturned.item;
 		}
-		
+
 		/**
-		 * Removes from the underlying collection the last 
-		 * element returned by this iterator.
+		 * Method removes from the underlying collection the last element returned by
+		 * this iterator.
 		 */
 		@Override
-		public void remove(){
-			if(lastReturned == null)
+		public void remove() {
+			if (lastReturned == null) {
 				throw new IllegalStateException();
-			
-			Node prevLastReturned = lastReturned.prev;
-			
-			if(prevLastReturned == null){
+			}
+
+			Node previousLastReturned = lastReturned.previous;
+
+			if (previousLastReturned == null) {
 				headList = next;
-			} 
-			else{
-				prevLastReturned.next = next;
+			} else {
+				previousLastReturned.next = next;
 			}
-			
-			if(lastReturned.next == null){
-				tailList = prevLastReturned;
+
+			if (lastReturned.next == null) {
+				tailList = previousLastReturned;
+			} else {
+				lastReturned.next.previous = previousLastReturned;
 			}
-			else{
-				lastReturned.next.prev = prevLastReturned;
-			}
-			
+
 			lastReturned = null;
-			
-			size--;
+
 			index--;
-			
+			size--;
 		}
 	}
-	
+
 	/**
-	 * Returned the iterator of this list.
+	 * Method returned the iterator of this list.
 	 * 
 	 * @return the iterator of this list.
 	 */
@@ -318,36 +319,36 @@ public class MyListImpl implements MyList, ListIterable{
 	 * This class implements ListIterator Interface.
 	 */
 	private class ListIteratorImpl extends IteratorImpl implements ListIterator {
-		
+
 		/**
 		 * Last returned element by Iterator.
 		 */
 		private Node lastReturned;
-		
+
 		/**
 		 * Reference to the next element after last returned.
 		 * 
 		 */
-        private Node next;
-        private int nextIndex;
-		
-        /**
-         * Constructor of List Iterator where next index = size.
-         */
-        ListIteratorImpl() {
-            nextIndex = size;
-        }
-        
-        /**
-         * returned true if previous element exists. 
-         * 
-         * @return true if previous element exists.
-         */
+		private Node next;
+		private int nextIndex;
+
+		/**
+		 * Constructor of List Iterator where next index = size.
+		 */
+		ListIteratorImpl() {
+			nextIndex = size;
+		}
+
+		/**
+		 * returned true if previous element exists.
+		 * 
+		 * @return true if previous element exists.
+		 */
 		@Override
 		public boolean hasPrevious() {
-			return nextIndex > 0; 
+			return nextIndex > 0;
 		}
-		
+
 		/**
 		 * Returned previous element moves the cursor position backwards.
 		 * 
@@ -355,29 +356,33 @@ public class MyListImpl implements MyList, ListIterable{
 		 */
 		@Override
 		public Object previous() {
-			if(!hasPrevious())
+			if (!hasPrevious()) {
 				throw new NoSuchElementException();
-			
-			lastReturned = next = (next == null) ? tailList : next.prev;
-            nextIndex--;
-            return lastReturned.item;
+			}
+
+			lastReturned = next = (next == null) ? tailList : next.previous;
+			nextIndex--;
+			return lastReturned.item;
 		}
-		
+
 		/**
-		 * Replaces the last element returned by next or previous with the specified element.
+		 * Replaces the last element returned by next or previous with the
+		 * specified element.
 		 * 
-		 * @param specific element which will replace.  
+		 * @param specific
+		 *            element which will replace.
 		 */
 		@Override
 		public void set(Object e) {
-			if (lastReturned == null)
-                throw new IllegalStateException();
-  
-            lastReturned.item = e;
+			if (lastReturned == null) {
+				throw new IllegalStateException();
+			}
+
+			lastReturned.item = e;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Returned the list iterator of this list.
 	 * 
@@ -385,9 +390,7 @@ public class MyListImpl implements MyList, ListIterable{
 	 */
 	@Override
 	public ListIterator listIterator() {
-		 return new ListIteratorImpl();
+		return new ListIteratorImpl();
 	}
-	
-	
 
 }

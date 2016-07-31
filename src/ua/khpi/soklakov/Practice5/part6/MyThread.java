@@ -16,7 +16,7 @@ public class MyThread extends Thread {
 		try {
 			Part6.writeToFile(pointer, Part6.generateString(number));
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("IOException in run");
 		}
 	}
 

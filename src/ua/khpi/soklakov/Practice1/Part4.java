@@ -21,11 +21,12 @@ public class Part4 {
 	 */
 	public static int sumOfDigits(int num) {
 		int sum = 0;
+		int number = num;
 
-		while (num != 0) {
+		while (number != 0) {
 			// suming of digits
-			sum = sum + (num % 10);
-			num /= 10;
+			sum = sum + (number % 10);
+			number /= 10;
 		}
 		return sum;
 	}

@@ -1,7 +1,14 @@
 package ua.khpi.soklakov.Practice5.part1;
 
+/**
+ * First thread.
+ * 
+ * @author O.Soklakov
+ *
+ */
 public class MyThread extends Thread {
 
+	@Override
 	public void run() {
 		try {
 			int count = 0;
@@ -11,7 +18,7 @@ public class MyThread extends Thread {
 				Thread.sleep(500);
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println("InterruptedException in run");
 
 		}
 

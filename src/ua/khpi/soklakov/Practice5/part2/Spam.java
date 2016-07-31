@@ -1,57 +1,42 @@
 package ua.khpi.soklakov.Practice5.part2;
 
-class Spam extends Thread {
+/**
+ * Spam class
+ * @author Soklakov O.
+ *
+ */
+public class Spam implements Runnable {
 
-	private String[] messages = { "spam1", "spam2", "spam3" };
-	private int[] intervals = { 100, 400, 300 };
-	private boolean flag = true;
+	private int index;
+	static final String[] SPAM_MESSAGES = { "Spam1", "Spam2", "Spam3", "Spam4" };
+	static final int[] SPAM_TIMES = { 500, 500, 400, 200 };
 
-	public void setFlag(boolean flag) {
-		this.flag = flag;
-	}
-
-	public String[] getMessages() {
-		return messages;
-	}
-
-	public void setMessages(String[] messages) {
-		this.messages = messages.clone();
-	}
-
-	public int[] getIntervals() {
-		return intervals;
-	}
-
-	public void setIntervals(int[] intervals) {
-		this.intervals = intervals.clone();
-	}
-
-	public Spam() {
+	public Spam(int index) {
+		this.index = index;
 	}
 
 	/**
-	 * Start this thread.
+	 * Main method
+	 * @param args
 	 */
+	public static void main(String[] args) {
+		for (int i = 0; i < SPAM_TIMES.length; i++) {
+			Thread thread = new Thread(new Spam(i));
+			thread.setDaemon(true);
+			thread.start();
+		}
+
+	}
+
 	public void run() {
-		while (flag) {
-			getSpam();
-		}
-	}
-
-	/**
-	 * Method prints spam in the console over time.
-	 */
-	public void getSpam() {
-		for (int i = 0; i < messages.length; i++) {
-
-			System.out.println(messages[i]);
+		while (true) {
+			System.out.println(SPAM_MESSAGES[index] + " sleep: " + SPAM_TIMES[index]);
 			try {
-				Thread.sleep(intervals[i]);
+				Thread.sleep(SPAM_TIMES[index]);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
-
 		}
-
 	}
+
 }

@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class Part5 {
 
+	private static final String ENCODING = "Cp1251";
+	
 	/**
 	 * Main method.
 	 * 
@@ -13,8 +15,7 @@ public class Part5 {
 	 */
 	public static void main(String[] args) {
 
-		@SuppressWarnings("resource")
-		Scanner in = new Scanner(System.in);
+		Scanner in = new Scanner(System.in, ENCODING);
 		String input = in.nextLine();
 		String[] split = input.split(" ");
 		System.out.println(localization(split[0], split[1]));
@@ -28,6 +29,7 @@ public class Part5 {
 				break;
 			}
 		}
+		in.close();
 	}
 
 	/**

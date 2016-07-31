@@ -7,6 +7,11 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Note!!! Without synchronization this application not work properly!! Most
+ * likely a runtime exception will be thrown..
+ * 
+ */
 public class Part52 {
 
 	private static final int ITERATION_NUMBER = 3;
@@ -15,109 +20,128 @@ public class Part52 {
 
 	// shared resource (not thread-safe!!!)
 	private static final StringBuilder BUFFER = new StringBuilder();
+	
+	static final Lock WRITER_LOCK = new ReentrantLock();
+	static final Condition WRITER_CONDITION = WRITER_LOCK.newCondition();
+
+	static final Lock READER_LOCK = new ReentrantLock();
+	static final Condition READER_CONDITION = READER_LOCK.newCondition();
+
+	private static boolean isWriter = false;
+	
+	private static boolean isReader = false;
 
 	private static final int BUFFER_LENGTH = 5;
 
 	// speed parameter
 	private static final int PAUSE = 5;
 
-	// stop signal
-	private static boolean stop;
-
-	private static final Lock lock = new ReentrantLock();
-	private static final Condition CONDITION = lock.newCondition();
-	
-	private static int readerCount = 0;
-	private static int writerCount = 0;
+	private static boolean flag;
 
 	// reader
 	private static class Reader extends Thread {
+
 		public void run() {
-			while (!stop) {
+			while (!flag) {
 				try {
-
+					READER_LOCK.lock();
 					// read from the buffer
-					read(getName());
+					if (isWriter) {
+						read(getName());
+					}
+					READER_CONDITION.await();
 
+					WRITER_LOCK.lock();
+					WRITER_CONDITION.signal();
+					isReader = true;
+					WRITER_LOCK.unlock();
+					READER_LOCK.unlock();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 			}
 		}
 	}
 
-	// writer
 	private static class Writer extends Thread {
 		public void run() {
-			int tact = 0;
-			while (!stop) {
+			int count = 0;
+			while (!flag) {
 				try {
-
-					// write to the buffer
+					READER_LOCK.lock();
 					write();
+					isWriter = true;
+					READER_CONDITION.signalAll();
+					READER_LOCK.unlock();
+
+					WRITER_LOCK.lock();
+					while (!isReader) {
+						WRITER_CONDITION.await();
+					}
+					WRITER_LOCK.unlock();
+					sleep(5);
 
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				} finally {
-					if (++tact == ITERATION_NUMBER) {
-						stop = true;
+					READER_LOCK.lock();
+					count++;
+					if (count == ITERATION_NUMBER) {
+						flag = true;
+						READER_CONDITION.signalAll();
 					}
+					READER_LOCK.unlock();
 				}
 			}
 		}
 	}
 
+	/**
+	 * Reading method.
+	 * 
+	 * @param threadName
+	 *            specified thread.
+	 * @throws InterruptedException
+	 */
 	private static void read(String threadName) throws InterruptedException {
-		if (writerCount != READERS_NUMBER) {
-			lock.lock();
-			try {
-				readerCount++;
-				CONDITION.await();
-				System.out.printf("Reader %s:", threadName);
-				for (int j = 0; j < BUFFER_LENGTH; j++) {
-					Thread.sleep(PAUSE);
-					System.out.print(BUFFER.charAt(j));
-				}
-				System.out.println();
-				if (readerCount == READERS_NUMBER) {
-					readerCount = 0;
-					CONDITION.signalAll();
-				}
-				Thread.sleep(5);
-			} finally {
-				lock.unlock();
-			}
+		System.out.printf("Reader %s:", threadName);
+		for (int j = 0; j < BUFFER_LENGTH; j++) {
+			Thread.sleep(PAUSE);
+			System.out.print(BUFFER.charAt(j));
 		}
+		System.out.println();
+		Thread.sleep(5);
 	}
 
+	/**
+	 * Writing method.
+	 * 
+	 * @throws InterruptedException
+	 */
 	private static void write() throws InterruptedException {
-		lock.lock();
-		try {
-			// clear buffer
-			BUFFER.setLength(0);
+		// clear buffer
+		BUFFER.setLength(0);
 
-			// write to buffer
-			System.err.print("Writer writes:");
+		// write to buffer
+		System.err.print("Writer writes:");
 
-			Random random = new Random();
-			for (int j = 0; j < BUFFER_LENGTH; j++) {
-				Thread.sleep(PAUSE);
-				char ch = (char) ('A' + random.nextInt(26));
-				System.err.print(ch);
-				BUFFER.append(ch);
-			}
-			System.err.println();
-			writerCount++;
-			
-			CONDITION.signalAll();
-			CONDITION.await();
-			Thread.sleep(5);
-		} finally {
-			lock.unlock();
+		Random random = new Random();
+		for (int j = 0; j < BUFFER_LENGTH; j++) {
+			Thread.sleep(PAUSE);
+			char ch = (char) ('A' + random.nextInt(26));
+			System.err.print(ch);
+			BUFFER.append(ch);
 		}
-
+		System.err.println();
+		Thread.sleep(5);
 	}
 
+	/**
+	 * Main method.
+	 * 
+	 * @param args
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		// create writer
 		Writer writer = new Writer();

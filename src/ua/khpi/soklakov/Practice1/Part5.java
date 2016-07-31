@@ -3,18 +3,20 @@ package ua.khpi.soklakov.Practice1;
 /**
  * Fifth subtask
  * 
- * @author soklakov
+ * @author Soklakov
  *
  */
 public class Part5 {
 
+	/**
+	 * Main method.
+	 * Test all.
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		// int digit1 = Integer.parseInt(args[0]);
-		// String char1 = String.valueOf(args[1]);
-		// String char2 = String.valueOf(args[2]);
-		System.out.println(args[1] + " > " + Part5.columnToNumber(args[1]));
-		System.out.println(Integer.parseInt(args[0]) + " > " + Part5.numberToColumn(Integer.parseInt(args[0])));
-		System.out.println(args[2] + " > " + Part5.rightColumn(args[2]));
+		System.out.println(args[1] + " ===> " + Part5.column2Number(args[1]));
+		System.out.println(Integer.parseInt(args[0]) + " > " + Part5.number2Column(Integer.parseInt(args[0])));
+		System.out.println(args[2] + " ===> " + Part5.rightColumn(args[2]));
 	}
 
 	/**
@@ -24,13 +26,9 @@ public class Part5 {
 	 *            column name
 	 * @return column number
 	 */
-	public static int columnToNumber(String column) {
+	public static int column2Number(String column) {
 		int digit = 0;
 
-		/*
-		 * В одной итерации вычисляется номер одного символа колонки, с учетом
-		 * порядка в exel документе и суммируется с предыдущим результатом.
-		 */
 		for (int i = column.length(); i > 0; i--) {
 			digit += (int) (column.charAt(column.length() - i) - 64) * Math.pow(26, column.length() - i);
 		}
@@ -44,33 +42,28 @@ public class Part5 {
 	 *            column number
 	 * @return column name
 	 */
-	public static String numberToColumn(int number) {
-		String chars = ""; /* Найденые символы */
-		String charsMirror = ""; /* Символы в правильном порядке */
-		int modul;
-		int divident = number;
+	public static String number2Column(int number) {
+		String allChars = ""; 
+		String result = ""; 
+		int mod;
+		int div = number;
 		
-		/*
-		 * Нахождение номера символа в exel документе, далее перевод этого
-		 * номера, в номер ASCII таблицы и сохранение. В каждой итерации
-		 * происходит уменьшение исходного номера колонки с учетом найденой
-		 * буквы.
-		 */
-		while (divident != 0) {
-			modul = divident % 26;
-			if (modul == 0) {
-				chars += "Z";
-				divident = (divident - 1) / 26;
+		while (div != 0) {
+			mod = div % 26;
+			if (mod == 0) {
+				allChars = allChars.concat("Z");
+				div = (div - 1) / 26;
 			} else {
-				chars += (char) (modul + 64);
-				divident = (divident - modul) / 26;
+				allChars += (char) (mod + 64);
+				div = (div - mod) / 26;
 			}
 		}
 
-		/* Получение правильного порядка символов в имени колонки */
-		for (int i = 0; i < chars.length(); i++)
-			charsMirror += chars.charAt(chars.length() - i - 1);
-		return charsMirror;
+		for (int i = 0; i < allChars.length(); i++) {
+			Character c = allChars.charAt(allChars.length() - i - 1);
+			result = result.concat(c.toString());
+		}
+		return result;
 
 	}
 
@@ -82,12 +75,12 @@ public class Part5 {
 	 * @return
 	 */
 	public static String rightColumn(String column) {
-		String chars = "";
+		String result = "";
 		int num;
-		num = columnToNumber(column);
+		num = column2Number(column);
 		num++;
-		chars = numberToColumn(num);
-		return chars;
+		result = number2Column(num);
+		return result;
 	}
 
 }

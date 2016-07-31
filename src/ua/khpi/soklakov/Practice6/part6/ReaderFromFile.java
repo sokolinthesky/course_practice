@@ -2,8 +2,9 @@ package ua.khpi.soklakov.Practice6.part6;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * This class read data from file.
@@ -25,7 +26,8 @@ public class ReaderFromFile {
 		
 		 StringBuilder sb = new StringBuilder();
 		 
-		 try( BufferedReader in = new BufferedReader(new FileReader( f.getAbsolutePath())))
+		 try( BufferedReader in = new BufferedReader(
+				 new InputStreamReader(new FileInputStream(f.getAbsolutePath()), "Cp1251")))
 		 {
 		      String s;
 		      while ((s = in.readLine()) != null) {

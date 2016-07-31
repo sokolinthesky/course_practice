@@ -5,16 +5,22 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Part2 class.
+ * 
+ * @author Oleg Soklakov.
+ *
+ */
 public class Part2 {
 
 	/**
-	 * Main method.
+	 * Main method. Test.
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int n = 10000;
-		int k = 2;
+		int k = 4;
 		List<Integer> aList = new ArrayList<>();
 		List<Integer> lList = new LinkedList<>();
 		fillList(n, aList);
@@ -32,20 +38,6 @@ public class Part2 {
 	}
 
 	/**
-	 * Method fills specified list.
-	 * 
-	 * @param n
-	 *            list size.
-	 * @param list
-	 *            specified list.
-	 */
-	public static void fillList(int n, List<Integer> list) {
-		for (int i = 0; i < n; i++) {
-			list.add(i + 1);
-		}
-	}
-
-	/**
 	 * People are standing in a circle waiting to be executed. Counting begins
 	 * at a specified point in the circle and proceeds around the circle in a
 	 * specified direction. After a specified number of people are skipped, the
@@ -60,20 +52,33 @@ public class Part2 {
 	 *            specified number of people are skipped.
 	 */
 	public static void josephCircle(List<Integer> list, int k) {
-		int count = 0;
-		Iterator<Integer> it = list.iterator();
+		int iCount = 0;
+		Iterator<Integer> iter = list.iterator();
 		while (list.size() > 1) {
-			if (it.hasNext()) {
-				it.next();
-				count++;
-				if (count == k) {
-					it.remove();
-					count = 0;
-					// System.out.println(list);
+			if (iter.hasNext()) {
+				iter.next();
+				iCount++;
+				if (iCount == k) {
+					iter.remove();
+					iCount = 0;
 				}
 			} else {
-				it = list.iterator();
+				iter = list.iterator();
 			}
+		}
+	}
+
+	/**
+	 * Method fills specified list.
+	 * 
+	 * @param n
+	 *            list size.
+	 * @param list
+	 *            specified list.
+	 */
+	public static void fillList(int n, List<Integer> list) {
+		for (int i = 0; i < n; i++) {
+			list.add(i + 1);
 		}
 	}
 

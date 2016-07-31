@@ -1,5 +1,11 @@
 package ua.khpi.soklakov.Practice5.part1;
 
+/**
+ * Second thread.
+ * 
+ * @author O.Soklakov
+ *
+ */
 public class MySecondThread implements Runnable {
 
 	@Override
@@ -13,7 +19,7 @@ public class MySecondThread implements Runnable {
 				Thread.sleep(500);
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println("InterruptedException in run");
 		}
 
 	}

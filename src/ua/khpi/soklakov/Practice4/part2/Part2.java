@@ -1,9 +1,14 @@
 package ua.khpi.soklakov.Practice4.part2;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Random;
 
 /**
  * Second task.
@@ -39,12 +44,13 @@ public class Part2 {
 	 */
 	public static String createFileWithTenRandomNumbers() throws IOException {
 		File file = new File("file1.txt");
-		FileWriter fw = new FileWriter(file);
+		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "cp1251"));
+		Random r = new Random();
 		for (int i = 0; i < 10; i++) {
-			Integer j = (int) (Math.random() * 50);
-			fw.write(j.toString() + " ");
+			Integer j = r.nextInt(51);
+			out.write(j.toString() + " ");
 		}
-		fw.close();
+		out.close();
 		return file.getName();
 	}
 
@@ -55,12 +61,13 @@ public class Part2 {
 	 * @throws IOException
 	 */
 	public static String rearFromTxtFile(String fileName) throws IOException {
-		FileReader reader = new FileReader(fileName);
+		BufferedReader reader = new BufferedReader(
+				 new InputStreamReader(new FileInputStream(fileName), "Cp1251"));
 		int bite;
 		String resultString = "";
 		while ((bite = reader.read()) != -1) {
 			Character c = (char) bite;
-			resultString += c.toString();
+			resultString = resultString.concat(c.toString());
 		}
 		reader.close();
 
@@ -95,11 +102,11 @@ public class Part2 {
 	 */
 	public static String writeIntArrayToFile(int[] aNumbers) throws IOException {
 		File file = new File("file2.txt");
-		FileWriter wr = new FileWriter(file);
+		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "cp1251"));
 		for (Integer i : aNumbers) {
-			wr.write(i.toString() + " ");
+			out.write(i.toString() + " ");
 		}
-		wr.close();
+		out.close();
 		return file.getName();
 	}
 

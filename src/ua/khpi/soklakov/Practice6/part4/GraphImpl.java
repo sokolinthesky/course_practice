@@ -7,7 +7,7 @@ import java.util.*;
  * @author Oleg Soklakov
  */
 public class GraphImpl implements Graph {
-	private ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+	private List<ArrayList<Integer>> edges = new ArrayList<>();
 
 	@Override
 	public AbstractGraph createGraph(int numberNodes) {
@@ -23,15 +23,14 @@ public class GraphImpl implements Graph {
 				edges.get(first).add(second, 1);
 				edges.get(second).add(first, 1);
 			}
-
 			@Override
 			public void removeEdge(int first, int second) {
-				if (isExistEdge(first, second))
+				if (isExistEdge(first, second)) { 
 					edges.get(first).set(second, 0);
-				if (isExistEdge(second, first))
+				} else if (isExistEdge(second, first)) {
 					edges.get(second).set(first, 0);
+				}
 			}
-
 			@Override
 			public boolean isExistEdge(int first, int second) {
 				return edges.get(first).get(second) == 1 && edges.get(second).get(first) == 1;

@@ -1,4 +1,4 @@
-package ua.khpi.soklakov.Practice6.part4;
+ package ua.khpi.soklakov.Practice6.part4;
 
 public interface Graph {
 	/**
@@ -14,10 +14,10 @@ public interface Graph {
 	abstract class AbstractGraph {
 
 		/** The number of nodes */
-		protected final int NUMBER_NODES;
+		protected final int numberNodes;
 
 		public AbstractGraph(int numberNodes) {
-			this.NUMBER_NODES = numberNodes;
+			this.numberNodes = numberNodes;
 		}
 
 		/**

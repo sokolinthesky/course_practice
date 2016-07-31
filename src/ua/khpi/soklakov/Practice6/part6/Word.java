@@ -1,33 +1,29 @@
 package ua.khpi.soklakov.Practice6.part6;
 
 /**
- * Class represents word.
+ * Represents word.
  * 
- * @author Eugene Jurkov.
+ * @author Oleg Solakov.
  *
  */
 public class Word {
-	
+
 	/**
 	 * Name word.
 	 */
 	private String name;
-	
+
 	/**
-	 * Constructor class Word.
+	 * Constructor class Word. Set value to field name.
 	 * 
-	 * @param name word.
+	 * @param name
+	 *            specified word.
 	 */
-	public Word(String name){
+	public Word(String name) {
 		this.name = name;
 	}
-	
-	/**
-	 * Returned name of word.
-	 * 
-	 * @return	name of word.
-	 */
-	public String getName(){
+
+	public String getName() {
 		return name;
 	}
 }
