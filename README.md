@@ -1,5 +1,5 @@
 
-The tasks from the EPAM external course.<br>
+The tasks from the external course.<br>
 <h2>Technologies</h2>
 <ul>
  <li>Java 1.8</li>
